@@ -1,11 +1,11 @@
 package ru.javawebinar.topjava.repository.mock;
 
+import ru.javawebinar.topjava.AuthorizedUser;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -18,11 +18,13 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     private AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.MEALS.forEach(this::save);
+        MealsUtil.MEALS.forEach((meal) -> this.save(AuthorizedUser.id(), meal));
     }
 
     @Override
-    public Meal save(Meal meal) {
+    public Meal save(int userId, Meal meal) {
+        if (!(userId == AuthorizedUser.id()))
+            return null;
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
         }
@@ -31,18 +33,27 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     }
 
     @Override
-    public void delete(int id) {
+    public boolean delete(int userId, int id) {
+        if (!(userId == AuthorizedUser.id()))
+            return false;
         repository.remove(id);
+        return true;
     }
 
     @Override
-    public Meal get(int id) {
+    public Meal get(int userId, int id) {
+        if (!(userId == AuthorizedUser.id()))
+            return null;
         return repository.get(id);
     }
 
     @Override
-    public Collection<Meal> getAll() {
-        return repository.values();
+    public List<Meal> getAll(int userId) {
+        if (!(userId == AuthorizedUser.id()))
+            return null;
+        List<Meal> list = new ArrayList<Meal>(repository.values());
+        list.sort((o1, o2) -> o2.getDateTime().compareTo(o1.getDateTime()));
+        return list;
     }
 }
 
