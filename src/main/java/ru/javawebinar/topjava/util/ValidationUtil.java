@@ -25,6 +25,32 @@ public class ValidationUtil {
         }
     }
 
+    public static <T> T checkAccess(T object) {
+        if (object == null) {
+            throw new NotFoundException("Access denied");
+        }
+        return object;
+    }
+
+    public static void checkAccessAndExistence(boolean found, int id) {
+        checkAccessAndExistence(found, "id=" + id);
+    }
+
+    public static <T> T checkAccessAndExistence(T object, int id) {
+        return checkAccessAndExistence(object, "id=" + id);
+    }
+
+    public static <T> T checkAccessAndExistence(T object, String msg) {
+        checkAccessAndExistence(object != null, msg);
+        return object;
+    }
+
+    public static void checkAccessAndExistence(boolean found, String msg) {
+        if (!found) {
+            throw new NotFoundException("Access denied or not found entity with " + msg);
+        }
+    }
+
     public static void checkNew(BaseEntity entity) {
         if (!entity.isNew()) {
             throw new IllegalArgumentException(entity + " must be new (id=null)");
