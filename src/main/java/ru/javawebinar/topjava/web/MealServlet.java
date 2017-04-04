@@ -39,34 +39,32 @@ public class MealServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
-        int userId = Integer.parseInt(request.getParameter("userId"));
         Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
                 Integer.valueOf(request.getParameter("calories")));
 
         LOG.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-        service.save(userId, meal);
-        response.sendRedirect("meals?userId=" + userId);
+        service.save(AuthorizedUser.id(), meal);
+        response.sendRedirect("meals");
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-        int userId = Integer.parseInt(request.getParameter("userId"));
 
         switch (action == null ? "all" : action) {
             case "delete":
                 int id = getId(request);
                 LOG.info("Delete {}", id);
-                service.delete(userId, id);
-                response.sendRedirect("meals?userId=" + userId);
+                service.delete(AuthorizedUser.id(), id);
+                response.sendRedirect("meals");
                 break;
             case "create":
             case "update":
                 final Meal meal = action.equals("create") ?
-                        new Meal(userId, LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
-                        service.get(userId, getId(request));
+                        new Meal(AuthorizedUser.id(), LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
+                        service.get(AuthorizedUser.id(), getId(request));
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/meal.jsp").forward(request, response);
                 break;
@@ -74,7 +72,7 @@ public class MealServlet extends HttpServlet {
             default:
                 LOG.info("getAll");
                 request.setAttribute("meals",
-                        MealsUtil.getWithExceeded(service.getAll(userId), MealsUtil.DEFAULT_CALORIES_PER_DAY));
+                        MealsUtil.getWithExceeded(service.getAll(AuthorizedUser.id()), MealsUtil.DEFAULT_CALORIES_PER_DAY));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }

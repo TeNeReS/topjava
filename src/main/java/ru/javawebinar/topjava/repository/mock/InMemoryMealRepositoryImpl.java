@@ -9,6 +9,7 @@ import ru.javawebinar.topjava.util.MealsUtil;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * GKislin
@@ -25,7 +26,7 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     @Override
     public Meal save(int userId, Meal meal) {
-        if (!(userId == AuthorizedUser.id()))
+        if (!(meal.getUserId() == userId))
             return null;
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
@@ -36,26 +37,38 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     @Override
     public boolean delete(int userId, int id) {
-        if (!(userId == AuthorizedUser.id()) || !repository.containsKey(id))
+        try {
+            if (!(repository.get(id).getUserId() == userId))
+                return false;
+        }
+        catch (NullPointerException e){
             return false;
+        }
         repository.remove(id);
         return true;
     }
 
     @Override
     public Meal get(int userId, int id) {
-        if (!(userId == AuthorizedUser.id()) || !repository.containsKey(id))
+        Meal meal;
+        try {
+            meal = repository.get(id);
+            if (!(meal.getUserId() == userId))
+                return null;
+        }
+        catch (NullPointerException e){
             return null;
-        return repository.get(id);
+        }
+        return meal;
     }
 
     @Override
     public List<Meal> getAll(int userId) {
-        if (!(userId == AuthorizedUser.id()))
-            return null;
-        List<Meal> list = new ArrayList<Meal>(repository.values());
-        list.sort((o1, o2) -> o2.getDateTime().compareTo(o1.getDateTime()));
-        return list;
+        List<Meal> list = repository.values().stream()
+                .filter(meal -> meal.getUserId() == userId)
+                .sorted((o1, o2) -> o2.getDateTime().compareTo(o1.getDateTime()))
+                .collect(Collectors.toList());
+        return list.size() > 0 ? list : null;
     }
 }
 

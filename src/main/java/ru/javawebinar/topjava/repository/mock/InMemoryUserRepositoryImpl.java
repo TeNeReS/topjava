@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryUserRepositoryImpl implements UserRepository {
@@ -30,12 +31,13 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     @Override
     public boolean delete(int id) {
         LOG.info("delete " + id);
-        if (repository.containsKey(id))
-        {
+        try {
             repository.remove(id);
-            return true;
         }
-        return false;
+        catch (NullPointerException e){
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -51,29 +53,36 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     @Override
     public User get(int id) {
         LOG.info("get " + id);
-        if (repository.containsKey(id))
-        {
-            return repository.get(id);
+        User user;
+        try {
+            user = repository.get(id);
         }
-        return null;
+        catch (NullPointerException e){
+            return null;
+        }
+        return user;
     }
 
     @Override
     public List<User> getAll() {
         LOG.info("getAll");
-        List<User> list = new ArrayList<User>(repository.values());
-        list.sort(Comparator.comparing(NamedEntity::getName));
-        return list;
+        return repository.values().stream()
+                .sorted((o1, o2) -> o1.getName().compareTo(o2.getName()))
+                .collect(Collectors.toList());
     }
 
     @Override
     public User getByEmail(String email) {
         LOG.info("getByEmail " + email);
-        for (Map.Entry<Integer, User> pair : repository.entrySet()){
-            if (pair.getValue().getEmail().equals(email)){
-                return pair.getValue();
-            }
+        try {
+            return repository.values().stream()
+                    .filter(user -> user.getEmail().equals(email))
+                    .collect(Collectors.toList()).get(0);
         }
-        return null;
+        catch (NullPointerException e){
+            return null;
+        }
     }
+
+
 }

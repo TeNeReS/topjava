@@ -15,7 +15,7 @@ import static ru.javawebinar.topjava.util.ValidationUtil.checkAccessAndExistence
 @Service
 public class MealServiceImpl implements MealService {
     @Autowired
-    private MealRepository repository;
+    private MealRepository repository = new InMemoryMealRepositoryImpl();
 
     @Override
     public Meal save(int userId, Meal meal) throws NotFoundException {
