@@ -26,10 +26,17 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     @Override
     public Meal save(int userId, Meal meal) {
-        if (!(meal.getUserId() == userId))
-            return null;
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
+        }
+        else {
+            try {
+                if (!(repository.get(meal.getId()).getUserId() == userId))
+                    return null;
+            }
+            catch (NullPointerException e) {
+                return null;
+            }
         }
         repository.put(meal.getId(), meal);
         return meal;

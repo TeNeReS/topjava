@@ -3,13 +3,10 @@ package ru.javawebinar.topjava.repository.mock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-import ru.javawebinar.topjava.model.NamedEntity;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,7 +22,8 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
 
     {
         this.save(new User(counter.incrementAndGet(), "Вася", "mailone@mail.com", "one", Role.ROLE_ADMIN));
-        this.save(new User(counter.incrementAndGet(), "Петя", "mailtwo@mail.com", "two", Role.ROLE_USER));
+        this.save(new User(counter.incrementAndGet(), "Петя", "mail2@mail.com", "two", Role.ROLE_USER));
+        this.save(new User(counter.incrementAndGet(), "Петя", "mail1@mail.com", "two", Role.ROLE_USER));
         this.save(new User(counter.incrementAndGet(), "Коля", "mailthree@mail.com", "three", Role.ROLE_USER));
     }
     @Override
@@ -67,7 +65,12 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     public List<User> getAll() {
         LOG.info("getAll");
         return repository.values().stream()
-                .sorted((o1, o2) -> o1.getName().compareTo(o2.getName()))
+                .sorted((o1, o2) -> {
+                    int result = o1.getName().compareTo(o2.getName());
+                    if (result == 0)
+                        result = o1.getEmail().compareTo(o2.getEmail());
+                    return result;
+                })
                 .collect(Collectors.toList());
     }
 
