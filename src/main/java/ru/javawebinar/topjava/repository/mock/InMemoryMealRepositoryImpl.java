@@ -30,13 +30,8 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
             meal.setId(counter.incrementAndGet());
         }
         else {
-            try {
-                if (!(repository.get(meal.getId()).getUserId() == userId))
-                    return null;
-            }
-            catch (NullPointerException e) {
+            if (get(userId, meal.getId()) == null)
                 return null;
-            }
         }
         repository.put(meal.getId(), meal);
         return meal;
@@ -44,28 +39,14 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     @Override
     public boolean delete(int userId, int id) {
-        try {
-            if (!(repository.get(id).getUserId() == userId))
-                return false;
-        }
-        catch (NullPointerException e){
-            return false;
-        }
-        repository.remove(id);
-        return true;
+        return get(userId, id) != null && repository.remove(id) != null;
     }
 
     @Override
     public Meal get(int userId, int id) {
-        Meal meal;
-        try {
-            meal = repository.get(id);
-            if (!(meal.getUserId() == userId))
-                return null;
-        }
-        catch (NullPointerException e){
+        Meal meal = repository.get(id);
+        if (!(meal.getUserId() == userId))
             return null;
-        }
         return meal;
     }
 
@@ -73,9 +54,9 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     public List<Meal> getAll(int userId) {
         List<Meal> list = repository.values().stream()
                 .filter(meal -> meal.getUserId() == userId)
-                .sorted((o1, o2) -> o2.getDateTime().compareTo(o1.getDateTime()))
+                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
-        return list.size() > 0 ? list : null;
+        return list.size() > 0 ? list : Collections.emptyList();
     }
 }
 

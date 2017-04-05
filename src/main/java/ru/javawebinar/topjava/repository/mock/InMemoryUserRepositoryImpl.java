@@ -7,6 +7,7 @@ import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,13 +30,7 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     @Override
     public boolean delete(int id) {
         LOG.info("delete " + id);
-        try {
-            repository.remove(id);
-        }
-        catch (NullPointerException e){
-            return false;
-        }
-        return true;
+           return repository.remove(id) != null;
     }
 
     @Override
@@ -51,40 +46,23 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     @Override
     public User get(int id) {
         LOG.info("get " + id);
-        User user;
-        try {
-            user = repository.get(id);
-        }
-        catch (NullPointerException e){
-            return null;
-        }
-        return user;
+        return repository.get(id);
     }
 
     @Override
     public List<User> getAll() {
         LOG.info("getAll");
         return repository.values().stream()
-                .sorted((o1, o2) -> {
-                    int result = o1.getName().compareTo(o2.getName());
-                    if (result == 0)
-                        result = o1.getEmail().compareTo(o2.getEmail());
-                    return result;
-                })
+                .sorted(Comparator.comparing(User::getName).thenComparing(User::getEmail))
                 .collect(Collectors.toList());
     }
 
     @Override
     public User getByEmail(String email) {
         LOG.info("getByEmail " + email);
-        try {
             return repository.values().stream()
                     .filter(user -> user.getEmail().equals(email))
-                    .collect(Collectors.toList()).get(0);
-        }
-        catch (NullPointerException e){
-            return null;
-        }
+                    .findFirst().orElse(null);
     }
 
 
