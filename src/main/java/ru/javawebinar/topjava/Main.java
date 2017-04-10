@@ -1,5 +1,15 @@
 package ru.javawebinar.topjava;
 
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.repository.UserRepository;
+import ru.javawebinar.topjava.repository.jdbc.JdbcMealRepositoryImpl;
+import ru.javawebinar.topjava.repository.jdbc.JdbcUserRepositoryImpl;
+
+import java.time.LocalDateTime;
+import java.time.Month;
+
 /**
  * User: gkislin
  * Date: 05.08.2015
@@ -10,5 +20,17 @@ package ru.javawebinar.topjava;
 public class Main {
     public static void main(String[] args) {
         System.out.format("Hello Topjava Enterprise!");
+
+        ClassPathXmlApplicationContext springContext = new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/spring-db.xml");
+
+        MealRepository mR = springContext.getBean(JdbcMealRepositoryImpl.class);
+        UserRepository uR = springContext.getBean(JdbcUserRepositoryImpl.class);
+
+        mR.save(new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500), 100000);
+
+        System.out.println(uR.get(100000));
+        System.out.println(mR.get(100002, 100000));
+        System.out.println();
+        System.out.println(mR.getAll(100000));
     }
 }
