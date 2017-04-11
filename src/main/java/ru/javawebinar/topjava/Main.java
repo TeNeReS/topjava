@@ -26,12 +26,12 @@ public class Main {
         MealRepository mR = springContext.getBean(JdbcMealRepositoryImpl.class);
 //        UserRepository uR = springContext.getBean(JdbcUserRepositoryImpl.class);
 
-//        mR.save(new Meal(LocalDateTime.of(2015, Month.MAY, 20, 10, 0), "Завтрак", 500), 100000);
+        System.out.println(mR.save(new Meal(100011, LocalDateTime.of(2015, Month.MAY, 23, 10, 0), "Завтрак", 500), 100000));
 
 //        System.out.println(uR.get(100000));
 //        System.out.println(mR.get(100002, 100000));
 //        System.out.println();
 //        System.out.println(mR.getAll(100000));
-        System.out.println(mR.getBetween(LocalDateTime.of(2015, Month.MAY, 1, 0, 0), LocalDateTime.of(2015, Month.MAY, 30, 0, 0), 100000));
+//        System.out.println(mR.getBetween(LocalDateTime.of(2015, Month.MAY, 1, 0, 0), LocalDateTime.of(2015, Month.MAY, 30, 0, 0), 100000));
     }
 }
