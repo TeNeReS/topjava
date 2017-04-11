@@ -24,13 +24,14 @@ public class Main {
         ClassPathXmlApplicationContext springContext = new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/spring-db.xml");
 
         MealRepository mR = springContext.getBean(JdbcMealRepositoryImpl.class);
-        UserRepository uR = springContext.getBean(JdbcUserRepositoryImpl.class);
+//        UserRepository uR = springContext.getBean(JdbcUserRepositoryImpl.class);
 
-        mR.save(new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500), 100000);
+//        mR.save(new Meal(LocalDateTime.of(2015, Month.MAY, 20, 10, 0), "Завтрак", 500), 100000);
 
-        System.out.println(uR.get(100000));
-        System.out.println(mR.get(100002, 100000));
-        System.out.println();
-        System.out.println(mR.getAll(100000));
+//        System.out.println(uR.get(100000));
+//        System.out.println(mR.get(100002, 100000));
+//        System.out.println();
+//        System.out.println(mR.getAll(100000));
+        System.out.println(mR.getBetween(LocalDateTime.of(2015, Month.MAY, 1, 0, 0), LocalDateTime.of(2015, Month.MAY, 30, 0, 0), 100000));
     }
 }
