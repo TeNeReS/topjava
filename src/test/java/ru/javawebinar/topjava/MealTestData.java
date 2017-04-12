@@ -29,7 +29,7 @@ public class MealTestData {
                     (Objects.equals(expected.getDescription(), actual.getDescription())
                             && Objects.equals(expected.getId(), actual.getId())
                             && Objects.equals(expected.getCalories(), actual.getCalories())
-//                            && Objects.equals(expected.getDateTime(), actual.getDateTime())
+                            && Objects.equals(expected.getDateTime(), actual.getDateTime())
                     )
     );
 
