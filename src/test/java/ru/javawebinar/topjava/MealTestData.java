@@ -24,14 +24,7 @@ public class MealTestData {
     public static final Meal MEAL_FIVE = new Meal(ID_FIVE, LocalDateTime.of(2015, Month.MAY, 25, 12, 0),"Обед", 500);
     public static final Meal MEAL_SIX = new Meal(ID_SIX, LocalDateTime.of(2015, Month.MAY, 25, 18, 0),"Ужин", 1000);
 
-    public static final ModelMatcher<Meal> MATCHER = new ModelMatcher<>(
-            (expected, actual) -> expected == actual ||
-                    (Objects.equals(expected.getDescription(), actual.getDescription())
-                            && Objects.equals(expected.getId(), actual.getId())
-                            && Objects.equals(expected.getCalories(), actual.getCalories())
-                            && Objects.equals(expected.getDateTime(), actual.getDateTime())
-                    )
-    );
+    public static final ModelMatcher<Meal> MATCHER = new ModelMatcher<>();
 
 
 

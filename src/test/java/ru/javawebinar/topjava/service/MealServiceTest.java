@@ -75,8 +75,18 @@ public class MealServiceTest {
     }
 
     @Test
+    public void testGetAll() throws Exception {
+        MATCHER.assertCollectionEquals(Arrays.asList(MEAL_THREE, MEAL_TWO, MEAL_ONE), service.getAll(USER_ID));
+    }
+
+    @Test
+    public void testGetBetweenDateTimes() throws Exception {
+        MATCHER.assertCollectionEquals(Arrays.asList(MEAL_FIVE, MEAL_FOUR), service.getBetweenDateTimes(LocalDateTime.of(2015, Month.MAY, 25, 8, 0), LocalDateTime.of(2015, Month.MAY, 25, 15, 0), ADMIN_ID));
+    }
+
+    @Test
     public void testUpdate() throws Exception {
-        Meal updated = MEAL_SIX;
+        Meal updated = new Meal(MEAL_SIX.getId(), MEAL_SIX.getDateTime(), MEAL_SIX.getDescription(), MEAL_SIX.getCalories());
         updated.setDescription("Измененная еда");
         updated.setCalories(440);
         service.update(updated, 100001);
