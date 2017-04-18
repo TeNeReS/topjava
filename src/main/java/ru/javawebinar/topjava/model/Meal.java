@@ -8,20 +8,21 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @NamedQueries(value = {
-        @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.id=:id AND m.user.getId=:userId"),
-        @NamedQuery(name = Meal.GET, query = "SELECT m FROM Meal m WHERE m.id=:id AND m.user.getId=:userId"),
-        @NamedQuery(name = Meal.ALL, query = "SELECT m FROM Meal m WHERE m.user.getId=:userId ORDER BY m.dateTime DESC"),
-        @NamedQuery(name = Meal.BETWEEN, query = "SELECT m FROM Meal m WHERE m.user.getId=:userId AND m.dateTime BETWEEN  :startDate AND :endDate ORDER BY m.dateTime DESC"),
+        @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.id=:id AND m.user.id=:userId"),
+        @NamedQuery(name = Meal.GET, query = "SELECT m FROM Meal m WHERE m.id=:id AND m.user.id=:userId"),
+        @NamedQuery(name = Meal.ALL_SORTED, query = "SELECT m FROM Meal m WHERE m.user.id=:userId " +
+                "AND m.dateTime BETWEEN  :startDate AND :endDate ORDER BY m.dateTime DESC"),
+//        @NamedQuery(name = Meal.UPDATE, query = "UPDATE Meal m SET m.dateTime=:dateTime, m.description=:description, m.calories=:calories WHERE EXISTS (SELECT m FROM Meal m WHERE m.id=:id AND m.user.id=:userId)"),
 })
 
 @Entity
-@Table(name = "meals")
+@Table(name = "meals", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "date_time"}, name = "meals_unique_user_datetime_idx"))
 public class Meal extends BaseEntity {
 
     public static final String DELETE = "Meal.delete";
     public static final String GET = "Meal.get";
-    public static final String ALL = "Meal.getAll";
-    public static final String BETWEEN = "Meal.getBetween";
+    public static final String ALL_SORTED = "Meal.getAll";
+//    public static final String UPDATE = "Meal.update";
 
     @Column(name = "date_time", columnDefinition = "timestamp default now()")
     private LocalDateTime dateTime;
