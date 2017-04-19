@@ -44,12 +44,12 @@ public class MealServiceTest {
     private static final Logger LOG = LoggerFactory.getLogger(MealServiceTest.class);
 
     private static void logInfo(String name, long nanos) {
-        LOG.info(String.format("Время выполнения %s: %d мс",
+        LOG.info(String.format("Execution time of %s: %d ms",
                 name, TimeUnit.NANOSECONDS.toMillis(nanos)));
     }
 
-    private static void logInfoAll(Map<String, Long> map) {
-        map.forEach(MealServiceTest::logInfo);
+    private static void logInfoAll() {
+        methodsTime.forEach(MealServiceTest::logInfo);
     }
 
     private static Map<String, Long> methodsTime = new HashMap<String, Long>();
@@ -72,7 +72,7 @@ public class MealServiceTest {
 
     @AfterClass
     public static void after(){
-        logInfoAll(methodsTime);
+        logInfoAll();
     }
 
     @Test
