@@ -22,12 +22,7 @@ public class DataJpaMealRepositoryImpl implements MealRepository {
             return null;
         }
         meal.setUser(crudUserRepository.getOne(userId));
-        if (meal.isNew()) {
             return crudRepository.save(meal);
-        } else {
-            crudRepository.update(meal.getId(), userId, meal.getDateTime(), meal.getDescription(), meal.getCalories());
-            return meal;
-        }
     }
 
     @Override
