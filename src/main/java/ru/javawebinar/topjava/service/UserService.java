@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.service;
 
 
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
@@ -13,6 +14,13 @@ public interface UserService {
     void delete(int id) throws NotFoundException;
 
     User get(int id) throws NotFoundException;
+
+    @Transactional(timeout = 10)
+    default User getWithMeals(int id) throws NotFoundException{
+        User user = get(id);
+        user.getMeals().stream().findFirst();
+        return user;
+    }
 
     User getByEmail(String email) throws NotFoundException;
 
