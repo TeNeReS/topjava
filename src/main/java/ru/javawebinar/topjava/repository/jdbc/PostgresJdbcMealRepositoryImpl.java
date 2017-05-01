@@ -20,7 +20,7 @@ public class PostgresJdbcMealRepositoryImpl extends JdbcMealRepositoryImpl{
 
     @Override
     @SuppressWarnings("unchecked")
-    protected <T> T getValidatedDate(LocalDateTime dateTime) {
-        return (T) dateTime;
+    protected LocalDateTime getValidatedDate(LocalDateTime dateTime) {
+        return dateTime;
     }
 }

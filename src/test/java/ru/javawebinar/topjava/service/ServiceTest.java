@@ -56,5 +56,6 @@ public abstract class ServiceTest {
                 "\n---------------------------------\n" +
                 results +
                 "---------------------------------\n");
+        results.delete(0, results.length());
     }
 }

@@ -20,7 +20,7 @@ public class HSQLDBJdbcMealRepositoryImpl extends JdbcMealRepositoryImpl {
 
     @Override
     @SuppressWarnings("unchecked")
-    protected <T> T getValidatedDate(LocalDateTime dateTime) {
-        return (T)Timestamp.valueOf(dateTime);
+    protected Timestamp getValidatedDate(LocalDateTime dateTime) {
+        return Timestamp.valueOf(dateTime);
     }
 }
