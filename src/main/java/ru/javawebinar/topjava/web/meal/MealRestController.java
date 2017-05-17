@@ -14,18 +14,18 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping(MealRestController.REST_URL)
+@RequestMapping(value = MealRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class MealRestController extends AbstractMealController {
     static final String REST_URL = "/rest/meals";
 
     @Override
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
     public List<MealWithExceed> getAll() {
         return super.getAll();
     }
 
     @Override
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}")
     public Meal get(@PathVariable("id") int id) {
         return super.get(id);
     }
@@ -36,7 +36,7 @@ public class MealRestController extends AbstractMealController {
         super.delete(id);
     }
 
-    @PostMapping(value = "/filter", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/filter")
     public List<MealWithExceed> getBetween(@RequestParam("startDateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDateTime,
                                            @RequestParam("endDateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDateTime) {
         return super.getBetween(startDateTime.toLocalDate(), startDateTime.toLocalTime(), endDateTime.toLocalDate(), endDateTime.toLocalTime());
@@ -49,12 +49,12 @@ public class MealRestController extends AbstractMealController {
     }
 
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Meal> createWithLocation(@RequestBody Meal meal) {
         Meal created = super.create(meal);
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path(REST_URL)
+                .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
 
         return ResponseEntity.created(uriOfNewResource).body(created);
