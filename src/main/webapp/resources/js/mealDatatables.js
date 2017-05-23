@@ -33,3 +33,12 @@ $(function () {
     });
     makeEditable();
 });
+
+function filter() {
+    var form = $('#filterForm');
+    $.ajax({
+        type: "GET",
+        url: ajaxUrl + 'filter',
+        data: form.serialize()
+    });
+}

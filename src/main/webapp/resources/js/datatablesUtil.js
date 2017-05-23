@@ -4,6 +4,11 @@ function makeEditable() {
         return false;
     });
 
+    $('#filterForm').submit(function () {
+        filter();
+        return false;
+    });
+
     $(document).ajaxError(function (event, jqXHR, options, jsExc) {
         failNoty(event, jqXHR, options, jsExc);
     });
